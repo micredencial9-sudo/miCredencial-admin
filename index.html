@@ -22,8 +22,8 @@
     .btn:active { transform: scale(0.97); }
     .btn-publish { background: #38398a; color: #fff; }
     .btn-publish:hover { opacity: 0.88; }
-    .btn-disable { background: #f5f5f5; color: #555; border: 1.5px solid #e0e0e0; }
-    .btn-disable:hover { background: #efefef; }
+    .btn-disable { background: #d32f2f; color: #fff; border: none; }
+    .btn-disable:hover { opacity: 0.88; background: #c62828; }
     .status-box { margin-top: 20px; padding: 14px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; display: none; align-items: center; gap: 10px; }
     .status-box.success { background: #e8f5e9; color: #2e7d32; display: flex; }
     .status-box.error   { background: #fdecea; color: #c62828; display: flex; }
@@ -53,7 +53,7 @@
     Publicar Nueva Novedad
   </button>
   <hr class="divider"/>
-  <button class="btn btn-disable" onclick="desactivarNotificacion()">
+  <button class="btn btn-disable" id="btn-desactivar" style="display: none;" onclick="desactivarNotificacion()">
     <span class="material-symbols-outlined">notifications_off</span>
     Desactivar notificacion activa
   </button>
@@ -72,6 +72,22 @@
     document.getElementById('status-msg').textContent = msg;
   }
 
+  async function checkStatus() {
+    try {
+      const resp = await fetch(`${API_URL}?action=status`);
+      const data = await resp.json();
+      if (data.success && data.enabled) {
+        document.getElementById('btn-desactivar').style.display = 'flex';
+      } else {
+        document.getElementById('btn-desactivar').style.display = 'none';
+      }
+    } catch (e) {
+      console.error('Error verificando el estado de la notificacion', e);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', checkStatus);
+
   async function publicarNovedad() {
     const key = document.getElementById('admin-key').value.trim();
     if (!key) { mostrarStatus('error', 'lock', 'Ingresa la contrasena de administrador.'); return; }
@@ -83,6 +99,7 @@
       if (data.success) {
         mostrarStatus('success', 'check_circle', 'Novedad publicada! ID activo: ' + data.newId);
         document.getElementById('nota').value = '';
+        document.getElementById('btn-desactivar').style.display = 'flex';
       } else {
         mostrarStatus('error', 'error', data.message || 'Error desconocido.');
       }
@@ -101,6 +118,7 @@
       const data = await resp.json();
       if (data.success) {
         mostrarStatus('success', 'notifications_off', 'Notificacion desactivada correctamente.');
+        document.getElementById('btn-desactivar').style.display = 'none';
       } else {
         mostrarStatus('error', 'error', data.message || 'Error desconocido.');
       }
