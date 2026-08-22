@@ -93,11 +93,8 @@
     if (!key) { mostrarStatus('error', 'lock', 'Ingresa la contrasena de administrador.'); return; }
     mostrarStatus('loading', 'hourglass_top', 'Publicando novedad...');
     try {
-      const resp = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'publish', adminKey: key })
-      });
+      const url = `${API_URL}?action=publish&adminKey=${encodeURIComponent(key)}`;
+      const resp = await fetch(url);
       const data = await resp.json();
       if (data.success) {
         mostrarStatus('success', 'check_circle', 'Novedad publicada! ID activo: ' + data.newId);
@@ -116,11 +113,8 @@
     if (!key) { mostrarStatus('error', 'lock', 'Ingresa la contrasena de administrador.'); return; }
     mostrarStatus('loading', 'hourglass_top', 'Desactivando...');
     try {
-      const resp = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'disable', adminKey: key })
-      });
+      const url = `${API_URL}?action=disable&adminKey=${encodeURIComponent(key)}`;
+      const resp = await fetch(url);
       const data = await resp.json();
       if (data.success) {
         mostrarStatus('success', 'notifications_off', 'Notificacion desactivada correctamente.');
