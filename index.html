@@ -46,8 +46,6 @@
   </div>
   <label>Contrasena de administrador</label>
   <input type="password" id="admin-key" placeholder="Ingresa la contrasena"/>
-  <label>Descripcion interna (opcional)</label>
-  <textarea id="nota" placeholder="Ej: Se subio el acuerdo de enero 2026"></textarea>
   <button class="btn btn-publish" onclick="publicarNovedad()">
     <span class="material-symbols-outlined">send</span>
     Publicar Nueva Novedad
@@ -98,7 +96,6 @@
       const data = await resp.json();
       if (data.success) {
         mostrarStatus('success', 'check_circle', 'Novedad publicada! ID activo: ' + data.newId);
-        document.getElementById('nota').value = '';
         document.getElementById('btn-desactivar').style.display = 'flex';
       } else {
         mostrarStatus('error', 'error', data.message || 'Error desconocido.');
